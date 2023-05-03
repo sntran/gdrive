@@ -6,12 +6,34 @@ interface CounterProps {
 }
 
 export default function Counter(props: CounterProps) {
-  const [count, setCount] = useState(props.start);
+  const [files, setFiles] = useState<FileList | null>(null);
+
+  const onFileChange = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    setFiles(files);
+  };
+
+  const submit = async (event: Event) => {
+    event.preventDefault();
+    const { target } = event as SubmitEvent;
+    const { action } = target as HTMLFormElement;
+
+    await fetch(action, {
+      method: "PUT",
+      body: files![0], // This doesn't work
+      // body: "Hello World", // This works
+    });
+  }
+
   return (
-    <div class="flex gap-2 w-full">
-      <p class="flex-grow-1 font-bold text-xl">{count}</p>
-      <Button onClick={() => setCount(count - 1)}>-1</Button>
-      <Button onClick={() => setCount(count + 1)}>+1</Button>
-    </div>
+    <form
+      method="PUT"
+      class="flex gap-2 w-full"
+      onSubmit={submit}
+    >
+      <input name="file" type="file" onChange={onFileChange} />
+      <Button type="submit">Upload</Button>
+    </form>
   );
 }

@@ -1,5 +1,22 @@
 import { Head } from "$fresh/runtime.ts";
+import { Handlers } from "$fresh/server.ts";
+
 import Counter from "../islands/Counter.tsx";
+
+export const handler: Handlers = {
+  PUT(request: Request) {
+    const { method } = request;
+    const headers = new Headers({
+    });
+
+    headers.set("Location", "https://httpbin.org/put")
+
+    return new Response(null, {
+      status: 307,
+      headers,
+    });
+  },
+};
 
 export default function Home() {
   return (
